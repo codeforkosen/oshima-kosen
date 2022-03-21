@@ -1,0 +1,65 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>大島商船高専 デジタルツイン</title>
+<style>
+body {
+  margin: 0;
+  padding: 0;
+}
+#map {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+</style>
+</head>
+<body>
+
+<script src="https://unpkg.com/three@0.106.2/build/three.min.js"></script>
+<script src="https://unpkg.com/three@0.106.2/examples/js/loaders/GLTFLoader.js"></script>
+
+<div id='map'></div>
+
+<script type="module">
+import { maplibregl } from "https://taisukef.github.io/maplibre-gl-js/maplibre-gl-es.js";
+import { getModelLayer } from "https://code4fukui.github.io/vrmap/getModelLayer.js";
+
+const center = [33.938052522709896, 132.18969308754066];
+
+const map = new maplibregl.Map({
+  container: 'map',
+  hash: true,
+  style: "https://code4fukui.github.io/vrmap/mapsetting_nobuilding.json",
+  center: [center[1], center[0]], // opposite!
+  zoom: 16.6,
+  minZoom: 4,
+  maxZoom: 17.99,
+  bearing: 30,
+  pitch: 60,
+  doubleClickZoom: true,
+  localIdeographFontFamily: false
+});
+
+//UI
+map.addControl(new maplibregl.NavigationControl(), 'bottom-right');
+map.addControl(new maplibregl.ScaleControl());
+map.showTileBoundaries = false;
+map.showCollisionBoxes = false;
+
+map.on('style.load', () => {
+  map.addLayer(getModelLayer(
+    map,
+    "oshima-kosen",
+    "./oshima-kosen.glb",
+    33.938052522709896 - .00, 132.18969308754066 - 0.0007,
+    -3, Math.PI / 2 + .01, 3.1e-8
+  ));
+  map.addLayer(getModelLayer(
+    map,
+    "oshima-maru",
+    "./oshima-maru.glb",
+    33.940064145150316, 132.1873649303178,
+    0, Math.PI / 2 + .01, 150.1e-8
+  ));
+});
+
+</script>
